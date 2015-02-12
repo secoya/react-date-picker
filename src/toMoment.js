@@ -20,10 +20,10 @@ module.exports = function(value, dateFormat, config){
     dateFormat = dateFormat || CONFIG.dateFormat
 
     if (typeof value == 'string'){
-        return moment(value, dateFormat, strict)
+        return moment.utc(value, dateFormat, strict)
     }
 
     return moment.isMoment(value)?
     			value:
-    			moment(value == null? new Date(): value)
+    			moment.utc(value == null? new Date(): value)
 }

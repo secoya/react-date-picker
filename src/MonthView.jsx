@@ -35,7 +35,7 @@ var MonthView = React.createClass({
     },
 
     getWeekStartMoment: function(value){
-        var clone = moment(value).startOf('week')
+        var clone = moment.utc(value).startOf('week')
 
         // if (DEFAULT_WEEK_START_DAY != this.weekStartDay){
         //     clone.add('days', this.weekStartDay - DEFAULT_WEEK_START_DAY)
@@ -51,7 +51,7 @@ var MonthView = React.createClass({
      * @return {Moment[]}
      */
     getDaysInMonth: function(value){
-        var first = moment(value).startOf('month')
+        var first = moment.utc(value).startOf('month')
         var start = this.getWeekStartMoment(first)
         var result = []
         var i = 0
@@ -62,7 +62,7 @@ var MonthView = React.createClass({
         }
 
         for (; i < 42; i++){
-            result.push(moment(start))
+            result.push(moment.utc(start))
             start.add(1, 'days')
         }
 
@@ -71,18 +71,18 @@ var MonthView = React.createClass({
 
     render: function() {
 
-        TODAY = +moment().startOf('day')
+        TODAY = +moment.utc().startOf('day')
 
         var viewMoment = this.props.viewMoment = toMoment(this.props.viewDate, this.props.dateFormat)
 
         this.props.minDate && (this.props.minDate = +toMoment(this.props.minDate, this.props.dateFormat))
         this.props.maxDate && (this.props.maxDate = +toMoment(this.props.maxDate, this.props.dateFormat))
 
-        this.monthFirst = moment(viewMoment).startOf('month')
-        this.monthLast  = moment(viewMoment).endOf('month')
+        this.monthFirst = moment.utc(viewMoment).startOf('month')
+        this.monthLast  = moment.utc(viewMoment).endOf('month')
 
         if (this.props.date){
-            this.props.moment = moment(this.props.date).startOf('day')
+            this.props.moment = moment.utc(this.props.date).startOf('day')
         }
 
         var daysInView = this.getDaysInMonth(viewMoment)

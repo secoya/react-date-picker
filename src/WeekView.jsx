@@ -15,7 +15,7 @@ module.exports = React.createClass({
     },
 
     getDaysForView: function(value){
-        var first = moment(value).startOf('month')
+        var first = moment.utc(value).startOf('month')
         var start = this.getWeekStartMoment(first)
         var result = []
         var i = 0
@@ -26,7 +26,7 @@ module.exports = React.createClass({
         }
 
         for (; i < 42; i++){
-            result.push(moment(start))
+            result.push(moment.utc(start))
             start.add('days', 1)
         }
 

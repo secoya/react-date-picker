@@ -27,12 +27,12 @@ var YearView = React.createClass({
      * @return {Moment[]}
      */
     getMonthsInYear: function(value){
-        var start = moment(value).startOf('year')
+        var start = moment.utc(value).startOf('year')
         var result = []
         var i = 0
 
         for (; i < 12; i++){
-            result.push(moment(start))
+            result.push(moment.utc(start))
             start.add(1, 'month')
         }
 
@@ -41,12 +41,12 @@ var YearView = React.createClass({
 
     render: function() {
 
-        TODAY = +moment().startOf('day')
+        TODAY = +moment.utc().startOf('day')
 
-        var viewMoment = this.props.viewMoment = moment(this.props.viewDate)
+        var viewMoment = this.props.viewMoment = moment.utc(this.props.viewDate)
 
         if (this.props.date){
-            this.props.moment = moment(this.props.date).startOf('month')
+            this.props.moment = moment.utc(this.props.date).startOf('month')
         }
 
         var monthsInView = this.getMonthsInYear(viewMoment)

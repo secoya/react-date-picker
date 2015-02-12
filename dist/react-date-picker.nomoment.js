@@ -7,7 +7,7 @@
 		exports["DatePicker"] = factory(require("React"), require("moment"));
 	else
 		root["DatePicker"] = factory(root["React"], root["moment"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_7__, __WEBPACK_EXTERNAL_MODULE_8__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -54,21 +54,35 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = {
+		Datepicker: __webpack_require__(1),
+		DecadeView: __webpack_require__(2),
+		Header: __webpack_require__(3),
+		MonthView: __webpack_require__(4),
+		WeekView: __webpack_require__(5),
+		YearView: __webpack_require__(6)
+	};
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/** @jsx React.DOM */'use strict'
 
-	var React  = __webpack_require__(1)
+	var React  = __webpack_require__(7)
 
-	var moment   = __webpack_require__(2)
-	var asConfig = __webpack_require__(9)
-	var assign   = __webpack_require__(11)
+	var moment   = __webpack_require__(8)
+	var asConfig = __webpack_require__(12)
+	var assign   = __webpack_require__(14)
 
-	var MonthView  = __webpack_require__(3)
-	var YearView   = __webpack_require__(4)
-	var DecadeView = __webpack_require__(5)
-	var Header = __webpack_require__(6)
+	var MonthView  = __webpack_require__(4)
+	var YearView   = __webpack_require__(6)
+	var DecadeView = __webpack_require__(2)
+	var Header = __webpack_require__(3)
 
-	var toMoment = __webpack_require__(7)
-	var isMoment = __webpack_require__(8)
+	var toMoment = __webpack_require__(9)
+	var isMoment = __webpack_require__(10)
 
 	var hasOwn = function(obj, key){
 	    return Object.prototype.hasOwnProperty.call(obj, key)
@@ -86,7 +100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    decade: DecadeView
 	}
 
-	var getWeekDayNames = __webpack_require__(10)
+	var getWeekDayNames = __webpack_require__(13)
 
 	function emptyFn(){}
 
@@ -311,12 +325,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Use this method to set the view.
-	     * 
+	     *
 	     * @param {String} view 'month'/'year'/'decade'
 	     *
 	     * It calls onViewChange, and if the view is uncontrolled, also sets it is state,
 	     * so the datepicker gets re-rendered view the new view
-	     * 
+	     *
 	     */
 	    setView: function(view) {
 
@@ -357,13 +371,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return ({
 	            month: function() {
-	                return moment(current).add(1, 'month')
+	                return moment.utc(current).add(1, 'month')
 	            },
 	            year: function() {
-	                return moment(current).add(1, 'year')
+	                return moment.utc(current).add(1, 'year')
 	            },
 	            decade: function() {
-	                return moment(current).add(10, 'year')
+	                return moment.utc(current).add(10, 'year')
 	            }
 	        })[this.getViewName()]()
 	    },
@@ -373,13 +387,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return ({
 	            month: function() {
-	                return moment(current).add(-1, 'month')
+	                return moment.utc(current).add(-1, 'month')
 	            },
 	            year: function() {
-	                return moment(current).add(-1, 'year')
+	                return moment.utc(current).add(-1, 'year')
 	            },
 	            decade: function() {
-	                return moment(current).add(-10, 'year')
+	                return moment.utc(current).add(-10, 'year')
 	            }
 	        })[this.getViewName()]()
 	    },
@@ -408,7 +422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    handleChange: function(date, event) {
-	        date = moment(date)
+	        date = moment.utc(date)
 
 	        var text = date.format(this.props.dateFormat)
 
@@ -424,7 +438,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        })[viewName]
 
 	        var value      = date.get(property)
-	        var viewMoment = moment(this.getViewDate()).set(property, value)
+	        var viewMoment = moment.utc(this.getViewDate()).set(property, value)
 	        var view       = this.getPrevViewName()
 
 	        this.setViewDate(viewMoment)
@@ -441,30 +455,210 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = DatePicker
 
-/***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+	/** @jsx React.DOM */'use strict'
+
+	var React  = __webpack_require__(7)
+	var moment = __webpack_require__(8)
+
+	var FORMAT   = __webpack_require__(11)
+	var asConfig = __webpack_require__(12)
+	var toMoment = __webpack_require__(9)
+
+	var TODAY
+
+	function emptyFn(){}
+
+	var DecadeView = React.createClass({
+
+	    displayName: 'DecadeView',
+
+	    getDefaultProps: function() {
+	        return asConfig()
+	    },
+
+	    /**
+	     * Returns all the years in the decade of the given value
+	     *
+	     * @param  {Moment/Date/Number} value
+	     * @return {Moment[]}
+	     */
+	    getYearsInDecade: function(value){
+	        var year = moment.utc(value).get('year')
+	        var offset = year % 10
+
+	        year = year - offset - 1
+
+	        var result = []
+	        var i = 0
+
+	        var start = moment.utc(year, 'YYYY').startOf('year')
+
+	        for (; i < 12; i++){
+	            result.push(moment.utc(start))
+	            start.add(1, 'year')
+	        }
+
+	        return result
+	    },
+
+	    render: function() {
+
+	        TODAY = +moment.utc().startOf('day')
+
+	        var viewMoment = this.props.viewMoment = moment.utc(this.props.viewDate)
+
+	        if (this.props.date){
+	            this.props.moment = moment.utc(this.props.date).startOf('year')
+	        }
+
+	        var yearsInView = this.getYearsInDecade(viewMoment)
+
+	        return (
+	            React.createElement("table", {className: "dp-table dp-decade-view"}, 
+	                React.createElement("tbody", null, 
+	                    this.renderYears(yearsInView)
+
+	                )
+	            )
+	        )
+	    },
+
+	    /**
+	     * Render the given array of days
+	     * @param  {Moment[]} days
+	     * @return {React.DOM}
+	     */
+	    renderYears: function(days) {
+	        var nodes      = days.map(this.renderYear, this)
+	        var len        = days.length
+	        var buckets    = []
+	        var bucketsLen = Math.ceil(len / 4)
+
+	        var i = 0
+
+	        for ( ; i < bucketsLen; i++){
+	            buckets.push(nodes.slice(i * 4, (i + 1) * 4))
+	        }
+
+	        return buckets.map(function(bucket, i){
+	            return React.createElement("tr", {key: "row" + i}, bucket)
+	        })
+	    },
+
+	    renderYear: function(date, index, arr) {
+	        var yearText = FORMAT.year(date)
+	        var classes = ["dp-cell dp-year"]
+
+	        var dateTimestamp = +date
+
+	        if (dateTimestamp == this.props.moment){
+	            classes.push('dp-value')
+	        }
+
+	        if (!index){
+	            classes.push('dp-prev')
+	        }
+
+	        if (index == arr.length - 1){
+	            classes.push('dp-next')
+	        }
+
+	        return (
+	            React.createElement("td", {key: yearText, className: classes.join(' '), onClick: this.handleClick.bind(this, date)}, 
+	                yearText
+	            )
+	        )
+	    },
+
+	    handleClick: function(date, event) {
+	        event.target.value = date
+	        ;(this.props.onSelect || emptyFn)(date, event)
+	    }
+	})
+
+	DecadeView.getHeaderText = function(value) {
+	    var year = moment.utc(value).get('year')
+	    var offset = year % 10
+
+	    year = year - offset - 1
+
+	    return year + ' - ' + (year + 11)
+	}
+
+	module.exports = DecadeView
+
 
 /***/ },
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/** @jsx React.DOM */'use strict';
+
+	var React = __webpack_require__(7)
+
+	var P = React.PropTypes
+
+	module.exports = React.createClass({
+
+		displayName: 'DatePickerHeader',
+
+		propTypes: {
+			onChange: P.func,
+			onPrev  : P.func,
+			onNext  : P.func,
+			colspan : P.number,
+			children: P.node
+		},
+
+		render: function() {
+
+			var props = this.props
+
+			return React.createElement("div", {className: "dp-header"}, 
+	            React.createElement("table", {className: "dp-nav-table"}, 
+	            	React.createElement("tbody", null, 
+		                React.createElement("tr", {className: "dp-row"}, 
+		                    React.createElement("td", {
+		                    	className: "dp-prev-nav dp-nav-cell dp-cell", 
+		                    	onClick: props.onPrev
+		                    }, props.prevText
+		                    ), 
+
+		                    React.createElement("td", {
+		                    	className: "dp-nav-view dp-cell", 
+		                    	colSpan: props.colspan, 
+		                    	onClick: props.onChange
+		                    }, props.children), 
+
+		                    React.createElement("td", {
+		                    	className: "dp-next-nav dp-nav-cell dp-cell", 
+		                    	onClick: props.onNext
+		                    }, props.nextText)
+		                )
+	            	)
+	            )
+	        )
+		}
+
+	})
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/** @jsx React.DOM */'use strict'
 
-	var React  = __webpack_require__(1)
-	var moment = __webpack_require__(2)
+	var React  = __webpack_require__(7)
+	var moment = __webpack_require__(8)
 
-	var FORMAT   = __webpack_require__(12)
-	var asConfig = __webpack_require__(9)
-	var toMoment = __webpack_require__(7)
+	var FORMAT   = __webpack_require__(11)
+	var asConfig = __webpack_require__(12)
+	var toMoment = __webpack_require__(9)
 
 	var TODAY
 
@@ -494,7 +688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    getWeekStartMoment: function(value){
-	        var clone = moment(value).startOf('week')
+	        var clone = moment.utc(value).startOf('week')
 
 	        // if (DEFAULT_WEEK_START_DAY != this.weekStartDay){
 	        //     clone.add('days', this.weekStartDay - DEFAULT_WEEK_START_DAY)
@@ -510,7 +704,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @return {Moment[]}
 	     */
 	    getDaysInMonth: function(value){
-	        var first = moment(value).startOf('month')
+	        var first = moment.utc(value).startOf('month')
 	        var start = this.getWeekStartMoment(first)
 	        var result = []
 	        var i = 0
@@ -521,7 +715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        for (; i < 42; i++){
-	            result.push(moment(start))
+	            result.push(moment.utc(start))
 	            start.add(1, 'days')
 	        }
 
@@ -530,18 +724,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    render: function() {
 
-	        TODAY = +moment().startOf('day')
+	        TODAY = +moment.utc().startOf('day')
 
 	        var viewMoment = this.props.viewMoment = toMoment(this.props.viewDate, this.props.dateFormat)
 
 	        this.props.minDate && (this.props.minDate = +toMoment(this.props.minDate, this.props.dateFormat))
 	        this.props.maxDate && (this.props.maxDate = +toMoment(this.props.maxDate, this.props.dateFormat))
 
-	        this.monthFirst = moment(viewMoment).startOf('month')
-	        this.monthLast  = moment(viewMoment).endOf('month')
+	        this.monthFirst = moment.utc(viewMoment).startOf('month')
+	        this.monthLast  = moment.utc(viewMoment).endOf('month')
 
 	        if (this.props.date){
-	            this.props.moment = moment(this.props.date).startOf('day')
+	            this.props.moment = moment.utc(this.props.date).startOf('day')
 	        }
 
 	        var daysInView = this.getDaysInMonth(viewMoment)
@@ -661,18 +855,76 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = MonthView
 
+
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */'use strict'
 
-	var React  = __webpack_require__(1)
-	var moment = __webpack_require__(2)
+	var React  = __webpack_require__(7)
+	var moment = __webpack_require__(8)
 
-	var FORMAT   = __webpack_require__(12)
-	var asConfig = __webpack_require__(9)
-	var toMoment = __webpack_require__(7)
+	module.exports = React.createClass({
+
+	    displayName: 'WeekView',
+
+	    getDefaultProps: function() {
+	        return {
+	            days: [],
+	            date: null
+	        }
+	    },
+
+	    getDaysForView: function(value){
+	        var first = moment.utc(value).startOf('month')
+	        var start = this.getWeekStartMoment(first)
+	        var result = []
+	        var i = 0
+
+	        if (first.add('days', -1).isBefore(start)){
+	            //make sure the last day of prev month is included
+	            start.add('weeks', -1)
+	        }
+
+	        for (; i < 42; i++){
+	            result.push(moment.utc(start))
+	            start.add('days', 1)
+	        }
+
+	        return result
+	    },
+
+
+	    render: function() {
+
+	        var days = this.props.days
+	        var date = this.props.date
+
+	        return (
+	            React.createElement("table", null, 
+	                React.createElement("tbody", null, 
+	                    weekDayNames.map(renderDayName)
+	                )
+	            )
+	        )
+	    }
+
+	})
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */'use strict'
+
+	var React  = __webpack_require__(7)
+	var moment = __webpack_require__(8)
+
+	var FORMAT   = __webpack_require__(11)
+	var asConfig = __webpack_require__(12)
+	var toMoment = __webpack_require__(9)
 
 	var TODAY
 
@@ -694,12 +946,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @return {Moment[]}
 	     */
 	    getMonthsInYear: function(value){
-	        var start = moment(value).startOf('year')
+	        var start = moment.utc(value).startOf('year')
 	        var result = []
 	        var i = 0
 
 	        for (; i < 12; i++){
-	            result.push(moment(start))
+	            result.push(moment.utc(start))
 	            start.add(1, 'month')
 	        }
 
@@ -708,12 +960,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    render: function() {
 
-	        TODAY = +moment().startOf('day')
+	        TODAY = +moment.utc().startOf('day')
 
-	        var viewMoment = this.props.viewMoment = moment(this.props.viewDate)
+	        var viewMoment = this.props.viewMoment = moment.utc(this.props.viewDate)
 
 	        if (this.props.date){
-	            this.props.moment = moment(this.props.date).startOf('month')
+	            this.props.moment = moment.utc(this.props.date).startOf('month')
 	        }
 
 	        var monthsInView = this.getMonthsInYear(viewMoment)
@@ -779,204 +1031,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = YearView
 
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */'use strict'
-
-	var React  = __webpack_require__(1)
-	var moment = __webpack_require__(2)
-
-	var FORMAT   = __webpack_require__(12)
-	var asConfig = __webpack_require__(9)
-	var toMoment = __webpack_require__(7)
-
-	var TODAY
-
-	function emptyFn(){}
-
-	var DecadeView = React.createClass({
-
-	    displayName: 'DecadeView',
-
-	    getDefaultProps: function() {
-	        return asConfig()
-	    },
-
-	    /**
-	     * Returns all the years in the decade of the given value
-	     *
-	     * @param  {Moment/Date/Number} value
-	     * @return {Moment[]}
-	     */
-	    getYearsInDecade: function(value){
-	        var year = moment(value).get('year')
-	        var offset = year % 10
-
-	        year = year - offset - 1
-
-	        var result = []
-	        var i = 0
-
-	        var start = moment(year, 'YYYY').startOf('year')
-
-	        for (; i < 12; i++){
-	            result.push(moment(start))
-	            start.add(1, 'year')
-	        }
-
-	        return result
-	    },
-
-	    render: function() {
-
-	        TODAY = +moment().startOf('day')
-
-	        var viewMoment = this.props.viewMoment = moment(this.props.viewDate)
-
-	        if (this.props.date){
-	            this.props.moment = moment(this.props.date).startOf('year')
-	        }
-
-	        var yearsInView = this.getYearsInDecade(viewMoment)
-
-	        return (
-	            React.createElement("table", {className: "dp-table dp-decade-view"}, 
-	                React.createElement("tbody", null, 
-	                    this.renderYears(yearsInView)
-
-	                )
-	            )
-	        )
-	    },
-
-	    /**
-	     * Render the given array of days
-	     * @param  {Moment[]} days
-	     * @return {React.DOM}
-	     */
-	    renderYears: function(days) {
-	        var nodes      = days.map(this.renderYear, this)
-	        var len        = days.length
-	        var buckets    = []
-	        var bucketsLen = Math.ceil(len / 4)
-
-	        var i = 0
-
-	        for ( ; i < bucketsLen; i++){
-	            buckets.push(nodes.slice(i * 4, (i + 1) * 4))
-	        }
-
-	        return buckets.map(function(bucket, i){
-	            return React.createElement("tr", {key: "row" + i}, bucket)
-	        })
-	    },
-
-	    renderYear: function(date, index, arr) {
-	        var yearText = FORMAT.year(date)
-	        var classes = ["dp-cell dp-year"]
-
-	        var dateTimestamp = +date
-
-	        if (dateTimestamp == this.props.moment){
-	            classes.push('dp-value')
-	        }
-
-	        if (!index){
-	            classes.push('dp-prev')
-	        }
-
-	        if (index == arr.length - 1){
-	            classes.push('dp-next')
-	        }
-
-	        return (
-	            React.createElement("td", {key: yearText, className: classes.join(' '), onClick: this.handleClick.bind(this, date)}, 
-	                yearText
-	            )
-	        )
-	    },
-
-	    handleClick: function(date, event) {
-	        event.target.value = date
-	        ;(this.props.onSelect || emptyFn)(date, event)
-	    }
-	})
-
-	DecadeView.getHeaderText = function(value) {
-	    var year = moment(value).get('year')
-	    var offset = year % 10
-
-	    year = year - offset - 1
-
-	    return year + ' - ' + (year + 11)
-	}
-
-	module.exports = DecadeView
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */'use strict';
-
-	var React = __webpack_require__(1)
-
-	var P = React.PropTypes
-
-	module.exports = React.createClass({
-
-		displayName: 'DatePickerHeader',
-
-		propTypes: {
-			onChange: P.func,
-			onPrev  : P.func,
-			onNext  : P.func,
-			colspan : P.number,
-			children: P.node
-		},
-
-		render: function() {
-
-			var props = this.props
-
-			return React.createElement("div", {className: "dp-header"}, 
-	            React.createElement("table", {className: "dp-nav-table"}, 
-	            	React.createElement("tbody", null, 
-		                React.createElement("tr", {className: "dp-row"}, 
-		                    React.createElement("td", {
-		                    	className: "dp-prev-nav dp-nav-cell dp-cell", 
-		                    	onClick: props.onPrev
-		                    }, props.prevText
-		                    ), 
-
-		                    React.createElement("td", {
-		                    	className: "dp-nav-view dp-cell", 
-		                    	colSpan: props.colspan, 
-		                    	onClick: props.onChange
-		                    }, props.children), 
-
-		                    React.createElement("td", {
-		                    	className: "dp-next-nav dp-nav-cell dp-cell", 
-		                    	onClick: props.onNext
-		                    }, props.nextText)
-		                )
-	            	)
-	            )
-	        )
-		}
-
-	})
 
 /***/ },
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = __WEBPACK_EXTERNAL_MODULE_7__;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict'
 
-	var moment = __webpack_require__(2)
-	var CONFIG = __webpack_require__(13)
+	var moment = __webpack_require__(8)
+	var CONFIG = __webpack_require__(15)
 
 	/**
 	 * This function will be used to convert a date to a moment.
@@ -995,35 +1070,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	    dateFormat = dateFormat || CONFIG.dateFormat
 
 	    if (typeof value == 'string'){
-	        return moment(value, dateFormat, strict)
+	        return moment.utc(value, dateFormat, strict)
 	    }
 
 	    return moment.isMoment(value)?
 	    			value:
-	    			moment(value == null? new Date(): value)
+	    			moment.utc(value == null? new Date(): value)
 	}
 
+
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var moment = __webpack_require__(2)
+	var moment = __webpack_require__(8)
 
 	module.exports = function(value){
 	    return moment.isMoment(value)
 	}
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var assign = __webpack_require__(11)
+	var CONFIG   = __webpack_require__(15)
+	var toMoment = __webpack_require__(9)
 
-	var CONFIG = __webpack_require__(13)
+	function f(mom, format){
+	    return toMoment(mom).format(format)
+	}
+
+	module.exports = {
+	    day: function(mom, format) {
+	        return f(mom, format || CONFIG.dayFormat)
+	    },
+
+	    month: function(mom, format) {
+	        return f(mom, format || CONFIG.monthFormat)
+	    },
+
+	    year: function(mom, format) {
+	        return f(mom, format || CONFIG.yearFormat)
+	    }
+	}
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict'
+
+	var assign = __webpack_require__(14)
+
+	var CONFIG = __webpack_require__(15)
 	var KEYS   = Object.keys(CONFIG)
 
 	function copyList(src, target, list){
@@ -1066,14 +1169,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var moment = __webpack_require__(2)
+	var moment = __webpack_require__(8)
 
-	var DEFAULT_WEEK_START_DAY = moment().startOf('week').format('d') * 1
+	var DEFAULT_WEEK_START_DAY = moment.utc().startOf('week').format('d') * 1
 
 	module.exports = function getWeekDayNames(startDay){
 
@@ -1088,8 +1191,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return names
 	}
 
+
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1121,39 +1225,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 
-	var CONFIG   = __webpack_require__(13)
-	var toMoment = __webpack_require__(7)
-
-	function f(mom, format){
-	    return toMoment(mom).format(format)
-	}
-
-	module.exports = {
-	    day: function(mom, format) {
-	        return f(mom, format || CONFIG.dayFormat)
-	    },
-
-	    month: function(mom, format) {
-	        return f(mom, format || CONFIG.monthFormat)
-	    },
-
-	    year: function(mom, format) {
-	        return f(mom, format || CONFIG.yearFormat)
-	    }
-	}
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict'
-
-	var getWeekDayNames = __webpack_require__(10)
+	var getWeekDayNames = __webpack_require__(13)
 
 	module.exports = {
 

@@ -2,7 +2,7 @@
 
 var moment = require('moment')
 
-var DEFAULT_WEEK_START_DAY = moment().startOf('week').format('d') * 1
+var DEFAULT_WEEK_START_DAY = moment.utc().startOf('week').format('d') * 1
 
 module.exports = function getWeekDayNames(startDay){
 
